@@ -32,7 +32,7 @@ heroku link here
 ## Credits
 Special thanks to the awesome staff at CS50 and Professor Malan!
 ## Questions
-If you have any additional questions please reach us through email or GitHub.
+If you have any additional questions please reach me through email or GitHub.
 
 ### GitHub: 
 
