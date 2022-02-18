@@ -33,21 +33,45 @@ def after_request(response):
     return response
 
 
-# Home route
+# Home/Search route
 @app.route("/")
 def index():
-    """ Show homepage """
+    """ Show homepage and allow users to search for shows/movies """
 
     # Render homepage
     return render_template("index.html")
 
-@app.route("/dashboard")
+# Watchlist Route
+@app.route("/watchlist")
 @login_required
 def dashboard():
     """ Show dashboard """
 
-    # Render homepage and pass in user details
-    return render_template("dashboard.html")
+    # Query DB for the users watchlist
+    watchlist = [
+        {
+            "title": "The Office",
+            "sites": "Peacock"
+        },
+        {
+            "title": "Happy Endings",
+            "sites": "Netflix"
+        },
+        {
+            "title": "Modern Family",
+            "sites": "Peacock, Hulu"
+        },
+        {
+            "title": "The Amazing Spider-Man",
+            "sites": "Prime Video"
+        }
+    ]
+
+    # Get username
+    username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])
+
+    # Render watchlist and pass in user details and watchlist
+    return render_template("watchlist.html", watchlist=watchlist, username=username[0]["username"])
 
 
 # Login Route
@@ -79,7 +103,7 @@ def login():
         session["user_id"] = rows[0]["id"]
 
         # Redirect to dashboard/watchlist
-        return redirect("/dashboard")
+        return redirect("/watchlist")
 
     # User reached route via GET
     else:
@@ -145,6 +169,31 @@ def register():
     # User reached route via GET
     else:
         return render_template("register.html")
+
+
+# Search Route
+@app.route("/search")
+def search():
+
+    # Ensure that the user entered a title
+    if not request.args.get("q"):
+        flash("Please provide the title of a show or movie that you want to watch")
+        print(request.path)
+        request.path = ""
+        print(request.path)
+        return render_template("index.html")
+
+    # Use Flixed API to search for title
+    title = request.args.get("q")
+    results = "None"
+
+    # Checks if there is a current session to dynamically render "+ Watchlist" button
+    if "user_id" in session:
+        user = session["user_id"]
+    else:
+        user = None
+
+    return render_template("results.html", results=results, title=title, user=user)
 
 
 # Wildcard Route

@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Results
+{% endblock %}
+
+{% block main %}
+    {% if results %}
+        <div>
+            <h2>Search Results for "{{title}}":</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Blah</th>
+                        <th>Site</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                        <tr>
+                            <td>show/movie title</td>
+                            <td>somthing here</td>
+                            <td>Netflix | Hulu | Disney+</td>
+                            <td>
+                                <button class="btn btn-primary">Details</button>
+                                {% if user %}
+                                    <span class="action-space"></span>
+                                    <button class="btn btn-success">+ Watchlist</button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div>
+            <h2>Hmm, no results found 🤔</h2>
+        </div>
+    {% endif %}
+{% endblock %}

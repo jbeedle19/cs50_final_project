@@ -5,5 +5,10 @@
 {% endblock %}
 
 {% block main %}
-    Homepage
+    <form action="/search" method="get">
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="q" name="q" placeholder="Search title..." type="text">
+        </div>
+        <button class="btn btn-primary" type="submit">Search</button>
+    </form>
 {% endblock %}

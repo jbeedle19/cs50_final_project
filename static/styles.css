@@ -22,21 +22,30 @@ nav .navbar-brand .green
     color: #2e944b;
 }
 
+/* Password Criteria */
 .pass-restraint {
     font-size: 13px;
     display: none;
 }
 
+/* Table Styles */
 table {
     background-color: transparent;
     margin-bottom: 1rem;
     width: 100%;
 }
+
 table th,
 table td {
     padding: 0.75rem;
     vertical-align: middle;
 }
+
 tbody tr:nth-of-type(odd) {
     background-color: rgb(179, 208, 255, 0.3)
+}
+
+.action-space {
+    margin-left: 3px;
+    margin-right: 3px;
 }

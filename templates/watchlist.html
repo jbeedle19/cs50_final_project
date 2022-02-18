@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Watchlist
+{% endblock %}
+
+{% block main %}
+    {% if watchlist %}
+        <div>
+            <h2>{{ username }}'s Watchlist:</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Sites</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in watchlist %}
+                        <tr>
+                            <td>{{ item["title"] }}</td>
+                            <td>{{ item["sites"] }}</td>
+                            <td>
+                                <button class="btn btn-primary">Watch</button>
+                                <span class="action-space"></span>
+                                <button class="btn btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div>
+            <h2>Hmm, no watchlist found 🤔</h2>
+        </div>
+    {% endif %}
+{% endblock %}
