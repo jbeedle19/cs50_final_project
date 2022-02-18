@@ -22,6 +22,11 @@ nav .navbar-brand .green
     color: #2e944b;
 }
 
+.pass-restraint {
+    font-size: 13px;
+    display: none;
+}
+
 table {
     background-color: transparent;
     margin-bottom: 1rem;

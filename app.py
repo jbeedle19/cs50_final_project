@@ -64,14 +64,16 @@ def login():
         # Ensure username and password was submitted
         if not request.form.get("username") or not request.form.get("password"):
             # SWAP FOR ALERT/FLASH
-            return apology("must provide username/password")
+            flash("Username and/or password missing")
+            return render_template("login.html")
 
         # Query DB for username
         rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
-            return apology("invalid username and/or password")
+            flash("Invalid username and/or password")
+            return render_template("login.html")
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
@@ -107,21 +109,25 @@ def register():
         # Ensure username, password, and confirmation was submitted and that passwords match
         # SWAP APOLOGIES FOR ALERTS/FLASHES
         if not request.form.get("username") or not request.form.get("password") or not request.form.get("confirmation"):
-            return apology("must fill out form completely")
+            flash("Must fill out form completely")
+            return render_template("register.html")
         if not request.form.get("password") == request.form.get("confirmation"):
-            return apology("passwords do not match")
+            flash("Passwords do not match")
+            return render_template("register.html")
 
         # Ensure proper password (8-20 chars, 1 lower, 1 upper, 1 digit, 1 special char)
         reg = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,20}$"
         pattern = re.compile(reg)
         match = re.search(pattern, request.form.get("password"))
         if not match:
-            return apology("Password does not meet criteria, please try again")
+            flash("Password does not meet criteria, please try again")
+            return render_template("register.html")
 
         # Query DB to make sure username is unique
         rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username").strip())
         if len(rows) > 0:
-            return apology("username already in use")
+            flash("Username is already in use, please try again")
+            return render_template("register.html")
 
         # Store username and hashed password for table insert
         username = request.form.get("username").strip()
