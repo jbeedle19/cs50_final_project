@@ -34,26 +34,22 @@ def login_required(f):
     return decorated_function
 
 
-# Adjust the following to use flixed api
-# def lookup(symbol):
-#     """Look up quote for symbol."""
+# Test API with IMDB, adjust to use Flixed API
+def lookup(title, type):
+    """ Look up show or movie """
 
-#     # Contact API
-#     try:
-#         api_key = os.environ.get("API_KEY")
-#         url = f"https://cloud.iexapis.com/stable/stock/{urllib.parse.quote_plus(symbol)}/quote?token={api_key}"
-#         response = requests.get(url)
-#         response.raise_for_status()
-#     except requests.RequestException:
-#         return None
-
-#     # Parse response
-#     try:
-#         quote = response.json()
-#         return {
-#             "name": quote["companyName"],
-#             "price": float(quote["latestPrice"]),
-#             "symbol": quote["symbol"]
-#         }
-#     except (KeyError, TypeError, ValueError):
-#         return None
+    # Contact API
+    try:
+        api_key = os.environ.get("IMDB_API_KEY")
+        url = f"https://imdb-api.com/en/API/{type}/{api_key}/{title}"
+        response = requests.get(url)
+        response.raise_for_status()
+    except requests.RequestException:
+        return None
+    
+    # Parse response
+    try:
+        data = response.json()
+        return data
+    except (KeyError, TypeError, ValueError):
+        return None
