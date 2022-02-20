@@ -12,7 +12,7 @@
                 <thead>
                     <tr>
                         <th>Title</th>
-                        <th>Blah</th>
+                        <th>Description</th>
                         <th>Site</th>
                         <th>Action</th>
                     </tr>
@@ -20,14 +20,14 @@
                 <tbody>
                     {% for result in results %}
                         <tr>
-                            <td>show/movie title</td>
-                            <td>somthing here</td>
+                            <td>{{ result["title"] }}</td>
+                            <td>{{ result["description"] }}</td>
                             <td>Netflix | Hulu | Disney+</td>
                             <td>
                                 <button class="btn btn-primary">Details</button>
                                 {% if user %}
                                     <span class="action-space"></span>
-                                    <button class="btn btn-success">+ Watchlist</button>
+                                    <button class="btn btn-success"><i class="bi bi-plus-lg"></i> Watchlist</button>
                                 {% endif %}
                             </td>
                         </tr>

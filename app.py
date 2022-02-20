@@ -8,7 +8,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from helpers import apology, login_required
+from helpers import apology, login_required, lookup
 
 # Configure application
 app = Flask(__name__)
@@ -175,17 +175,19 @@ def register():
 @app.route("/search")
 def search():
 
-    # Ensure that the user entered a title
+    # Ensure that the user entered a title and search type
     if not request.args.get("q"):
         flash("Please provide the title of a show or movie that you want to watch")
-        print(request.path)
-        request.path = ""
-        print(request.path)
+        return render_template("index.html")
+    if not request.args.get("searchType"):
+        flash("Please select 'Movie' or 'TV Series'")
         return render_template("index.html")
 
     # Use Flixed API to search for title
     title = request.args.get("q")
-    results = "None"
+    type = request.args.get("searchType")
+    print(type)
+    results = lookup(title, type)
 
     # Checks if there is a current session to dynamically render "+ Watchlist" button
     if "user_id" in session:
@@ -193,7 +195,7 @@ def search():
     else:
         user = None
 
-    return render_template("results.html", results=results, title=title, user=user)
+    return render_template("results.html", results=results["results"], title=title, user=user)
 
 
 # Wildcard Route

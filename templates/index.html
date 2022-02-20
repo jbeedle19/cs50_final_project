@@ -7,6 +7,12 @@
 {% block main %}
     <form action="/search" method="get">
         <div class="mb-3">
+            <input type="radio" class="btn-check" name="searchType" id="movie" autocomplete="off" value="SearchMovie">
+            <label class="btn btn-outline-warning" for="movie">Movie</label>
+            <input type="radio" class="btn-check" name="searchType" id="tv-series" autocomplete="off" value="SearchSeries">
+            <label class="btn btn-outline-warning" for="tv-series">TV Series</label>
+        </div>
+        <div class="mb-3">
             <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="q" name="q" placeholder="Search title..." type="text">
         </div>
         <button class="btn btn-primary" type="submit">Search</button>
