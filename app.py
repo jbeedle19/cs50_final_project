@@ -8,7 +8,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from helpers import apology, login_required, lookup
+from helpers import apology, login_required, lookupTitle
 
 # Configure application
 app = Flask(__name__)
@@ -41,37 +41,55 @@ def index():
     # Render homepage
     return render_template("index.html")
 
-# Watchlist Route
-@app.route("/watchlist")
+
+# Add to watchlist Route
+@app.route("/add", methods=["POST"])
 @login_required
-def dashboard():
-    """ Show dashboard """
+def add():
+    """ Add a movie or show to the users watchlist """
 
-    # Query DB for the users watchlist
-    watchlist = [
-        {
-            "title": "The Office",
-            "sites": "Peacock"
-        },
-        {
-            "title": "Happy Endings",
-            "sites": "Netflix"
-        },
-        {
-            "title": "Modern Family",
-            "sites": "Peacock, Hulu"
-        },
-        {
-            "title": "The Amazing Spider-Man",
-            "sites": "Prime Video"
-        }
-    ]
+    # Ensure form was sent correctly
+    if not request.form.get("imdbID") or not request.form.get("title")or not request.form.get("description"):
+        return apology("something went wrong, please try again")
 
-    # Get username
-    username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])
+    # Store form values
+    imdbID = request.form.get("imdbID")
+    title = request.form.get("title")
+    description = request.form.get("description")
 
-    # Render watchlist and pass in user details and watchlist
-    return render_template("watchlist.html", watchlist=watchlist, username=username[0]["username"])
+    # Ensure user does not already have movie/show in watchlist
+    exists = db.execute("SELECT imdb_id FROM watchlist WHERE user_id = ? AND imdb_id = ?", session["user_id"], imdbID)
+    if len(exists) > 0:
+        return apology("Movie/show is already in your watchlist")
+
+    # Add to users watchlist
+    db.execute("INSERT INTO watchlist (user_id, imdb_id, title, description) VALUES(?, ?, ?, ?)", session["user_id"], imdbID, title, description)
+
+    # Return user to watchlist
+    return redirect("/watchlist")
+
+# Details Route
+@app.route("/details", methods=["POST"])
+def details():
+    """ Display movie/show details """
+
+    # Ensure form was sent correctly
+    if not request.form.get("imdbID") or not request.form.get("title") or not request.form.get("image") or not request.form.get("description"):
+        return apology("something went wrong, please try again")
+
+    # Store form values
+    imdbID = request.form.get("imdbID")
+    title = request.form.get("title")
+    image = request.form.get("image")
+    description = request.form.get("description")
+
+    # Checks if there is a current session to dynamically render "+ Watchlist" button
+    if "user_id" in session:
+        user = session["user_id"]
+    else:
+        user = None
+
+    return render_template("details.html", imdbID=imdbID, title=title, image=image, description=description, user=user)
 
 
 # Login Route
@@ -183,19 +201,45 @@ def search():
         flash("Please select 'Movie' or 'TV Series'")
         return render_template("index.html")
 
-    # Use Flixed API to search for title
+    # Use IMDB API to search for related titles
     title = request.args.get("q")
     type = request.args.get("searchType")
-    print(type)
-    results = lookup(title, type)
+    results = lookupTitle(title, type)
 
-    # Checks if there is a current session to dynamically render "+ Watchlist" button
-    if "user_id" in session:
-        user = session["user_id"]
-    else:
-        user = None
+    return render_template("results.html", results=results["results"], title=title)
 
-    return render_template("results.html", results=results["results"], title=title, user=user)
+
+# Watchlist Route
+@app.route("/watchlist")
+@login_required
+def dashboard():
+    """ Show watchlist """
+
+    # Query DB for the users watchlist
+    watchlist = [
+        {
+            "title": "The Office",
+            "sites": "Peacock"
+        },
+        {
+            "title": "Happy Endings",
+            "sites": "Netflix"
+        },
+        {
+            "title": "Modern Family",
+            "sites": "Peacock, Hulu"
+        },
+        {
+            "title": "The Amazing Spider-Man",
+            "sites": "Prime Video"
+        }
+    ]
+
+    # Get username
+    username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])
+
+    # Render watchlist and pass in user details and watchlist
+    return render_template("watchlist.html", watchlist=watchlist, username=username[0]["username"])
 
 
 # Wildcard Route

@@ -1,6 +1,7 @@
 import os
 import requests
-import urllib.parse
+import urllib.request
+import json
 
 from flask import redirect, render_template, request, session
 from functools import wraps
@@ -34,8 +35,8 @@ def login_required(f):
     return decorated_function
 
 
-# Test API with IMDB, adjust to use Flixed API
-def lookup(title, type):
+# Search IMDB API for matching titles
+def lookupTitle(title, type):
     """ Look up show or movie """
 
     # Contact API
@@ -46,10 +47,16 @@ def lookup(title, type):
         response.raise_for_status()
     except requests.RequestException:
         return None
-    
+
     # Parse response
     try:
         data = response.json()
         return data
     except (KeyError, TypeError, ValueError):
         return None
+
+# Search for where the show is streaming
+# "https://api.watchmode.com/v1/title/{titleID}/sources/?apiKey={API_KEY}"
+
+# Search for show/movie
+# "https://api.watchmode.com/v1/search/?apiKey={API_KEY}&search_field=name&search_value={title}&types={type}"
