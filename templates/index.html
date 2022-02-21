@@ -5,6 +5,15 @@
 {% endblock %}
 
 {% block main %}
+    <div class="mb-5">
+        <h3 class="mb-4">Welcome to <span class="blue">Fi</span><span class="red">n</span><span class="yellow">a</span><span class="green">l</span> <span class="red">Project</span></h3>
+        <p>
+            Use the search below to find a movie or tv series that you'd like to watch.
+            <br>
+            Registered users can then add the results and curate their own watchlist of movies
+            and shows.  
+        </p>
+    </div>
     <form action="/search" method="get">
         <div class="mb-3">
             <input type="radio" class="btn-check" name="searchType" id="movie" autocomplete="off" value="SearchMovie">
