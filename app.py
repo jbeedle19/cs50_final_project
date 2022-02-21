@@ -42,6 +42,38 @@ def index():
     return render_template("index.html")
 
 
+# Action route for deleting or viewing watchlist items
+@app.route("/action", methods=["POST"])
+def action():
+    """ Show movie/show details or delete watchlist item"""
+
+    # Ensure form was sent correctly
+    if not request.form.get("title")or not request.form.get("description") or not request.form.get("image"):
+        return apology("something went wrong, please try again")
+
+    # Store form values
+    title = request.form.get("title")
+    description = request.form.get("description")
+    image = request.form.get("image")
+
+    # Handle details action
+    if "details" in request.form:
+
+        imdbID = request.form.get("details")
+
+        # Checks if there is a current session to dynamically render "+ Watchlist" button
+        if "user_id" in session:
+            user = session["user_id"]
+        else:
+            user = None
+
+        return render_template("details.html", imdbID=imdbID, title=title, image=image, description=description, user=user)
+
+    # Handle delete action
+    if "delete" in request.form:
+        return "delete"
+
+
 # Add to watchlist Route
 @app.route("/add", methods=["POST"])
 @login_required
@@ -49,13 +81,14 @@ def add():
     """ Add a movie or show to the users watchlist """
 
     # Ensure form was sent correctly
-    if not request.form.get("imdbID") or not request.form.get("title")or not request.form.get("description"):
+    if not request.form.get("imdbID") or not request.form.get("title")or not request.form.get("description") or not request.form.get("image"):
         return apology("something went wrong, please try again")
 
     # Store form values
     imdbID = request.form.get("imdbID")
     title = request.form.get("title")
     description = request.form.get("description")
+    image = request.form.get("image")
 
     # Ensure user does not already have movie/show in watchlist
     exists = db.execute("SELECT imdb_id FROM watchlist WHERE user_id = ? AND imdb_id = ?", session["user_id"], imdbID)
@@ -63,7 +96,7 @@ def add():
         return apology("Movie/show is already in your watchlist")
 
     # Add to users watchlist
-    db.execute("INSERT INTO watchlist (user_id, imdb_id, title, description) VALUES(?, ?, ?, ?)", session["user_id"], imdbID, title, description)
+    db.execute("INSERT INTO watchlist (user_id, imdb_id, title, description, image_link) VALUES(?, ?, ?, ?, ?)", session["user_id"], imdbID, title, description, image)
 
     # Return user to watchlist
     return redirect("/watchlist")
@@ -216,24 +249,7 @@ def dashboard():
     """ Show watchlist """
 
     # Query DB for the users watchlist
-    watchlist = [
-        {
-            "title": "The Office",
-            "sites": "Peacock"
-        },
-        {
-            "title": "Happy Endings",
-            "sites": "Netflix"
-        },
-        {
-            "title": "Modern Family",
-            "sites": "Peacock, Hulu"
-        },
-        {
-            "title": "The Amazing Spider-Man",
-            "sites": "Prime Video"
-        }
-    ]
+    watchlist = db.execute("SELECT imdb_id, title, description, image_link FROM watchlist WHERE user_id = ?", session["user_id"])
 
     # Get username
     username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])
