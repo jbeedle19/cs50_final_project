@@ -8,7 +8,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from helpers import apology, login_required, lookupTitle
+from helpers import apology, login_required, lookupTitle, getTitleId, getDetails
 
 # Configure application
 app = Flask(__name__)
@@ -44,8 +44,9 @@ def index():
 
 # Action route for deleting or viewing watchlist items
 @app.route("/action", methods=["POST"])
+@login_required
 def action():
-    """ Show movie/show details or delete watchlist item"""
+    """ Show details or delete watchlist item"""
 
     # Ensure form was sent correctly
     if not request.form.get("title")or not request.form.get("description") or not request.form.get("image"):
@@ -61,17 +62,36 @@ def action():
 
         imdbID = request.form.get("details")
 
-        # Checks if there is a current session to dynamically render "+ Watchlist" button
+        # Get title ID from Watchmode and then find sources
+        titleID = getTitleId(imdbID)
+        titleID = titleID["title_results"][0]["id"]
+        details = getDetails(titleID)
+
+        # Check logged in and watchlist for existing item to dynamically render "+ Watchlist" button
         if "user_id" in session:
             user = session["user_id"]
+            dbItem = db.execute("SELECT imdb_id FROM watchlist WHERE user_id = ? AND imdb_id = ?", session["user_id"], imdbID)
+            if len(dbItem) > 0:
+                exists = True
+            else:
+                exists = False
         else:
             user = None
 
-        return render_template("details.html", imdbID=imdbID, title=title, image=image, description=description, user=user)
+
+        return render_template("details.html", imdbID=imdbID, title=title, image=image, description=description, user=user, details=details, exists=exists)
 
     # Handle delete action
     if "delete" in request.form:
-        return "delete"
+
+        # Store id for deletion
+        imdbID = request.form.get("delete")
+
+        # Delete item from the current user's watchlist
+        db.execute("DELETE FROM watchlist WHERE user_id = ? AND imdb_id = ?", session["user_id"], imdbID)
+
+        # Reload watchlist
+        return redirect("/watchlist")
 
 
 # Add to watchlist Route
@@ -116,13 +136,25 @@ def details():
     image = request.form.get("image")
     description = request.form.get("description")
 
-    # Checks if there is a current session to dynamically render "+ Watchlist" button
+    # Get title ID from Watchmode and then find sources
+    titleID = getTitleId(imdbID)
+    titleID = titleID["title_results"][0]["id"]
+    details = getDetails(titleID)
+
+
+    # Checks if logged in and item exists in wathlist to dynamically render "+ Watchlist" button
     if "user_id" in session:
         user = session["user_id"]
+        dbItem = db.execute("SELECT imdb_id FROM watchlist WHERE user_id = ? AND imdb_id = ?", session["user_id"], imdbID)
+        if len(dbItem) > 0:
+            exists = True
+        else:
+            exists = False
     else:
         user = None
+        exists = False
 
-    return render_template("details.html", imdbID=imdbID, title=title, image=image, description=description, user=user)
+    return render_template("details.html", imdbID=imdbID, title=title, image=image, description=description, user=user, details=details, exists=exists)
 
 
 # Login Route

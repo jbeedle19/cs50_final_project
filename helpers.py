@@ -55,8 +55,44 @@ def lookupTitle(title, type):
     except (KeyError, TypeError, ValueError):
         return None
 
-# Search for where the show is streaming
-# "https://api.watchmode.com/v1/title/{titleID}/sources/?apiKey={API_KEY}"
 
-# Search for show/movie
-# "https://api.watchmode.com/v1/search/?apiKey={API_KEY}&search_field=name&search_value={title}&types={type}"
+# Search Watchmode API
+def getTitleId(imdbID):
+    """ Search Watchmode in order to get the movie/show id to then find its streaming sites """
+
+    # Contact API
+    try:
+        watch_api_key = os.environ.get("WATCHMODE_API_KEY")
+        url = f"https://api.watchmode.com/v1/search/?apiKey={watch_api_key}&search_field=imdb_id&search_value={imdbID}"
+        response = requests.get(url)
+        response.raise_for_status()
+    except requests.RequestException:
+        return None
+
+    # Parse response
+    try:
+        data = response.json()
+        return data
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+# Search Watchmode API
+def getDetails(titleId):
+    """ Search Watchmode for sources """
+
+    # Contact API
+    try:
+        watch_api_key = os.environ.get("WATCHMODE_API_KEY")
+        url = f"https://api.watchmode.com/v1/title/{titleId}/details/?apiKey={watch_api_key}&append_to_response=sources&regions=US"
+        response = requests.get(url)
+        response.raise_for_status()
+    except requests.RequestException:
+        return None
+
+    # Parse response
+    try:
+        data = response.json()
+        return data
+    except (KeyError, TypeError, ValueError):
+        return None

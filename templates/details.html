@@ -7,17 +7,55 @@
 {% block main %}
     <div>
         <form action="/add" method="post">
-            <h2>{{ title }}</h2>
             <input class="hide-input" name="title" value="{{ title }}">
-            <img src="{{ image }}" alt="{{ title }} poster" width="300" height="500">
             <input class="hide-input" name="image" value="{{ image }}">
-            <p>{{ description }}</p>
             <input class="hide-input" name="description" value="{{ description }}">
+            <h2 class="mb-3">{{ title }}</h2>
+            <img class="mb-3" src="{{ image }}" alt="{{ title }} poster" width="300" height="500">
+            <p class="mb-3">{{ details["plot_overview"] }}</p>
             {% if user %}
-                <button class="btn btn-success" name="imdbID" type="submit" value="{{ imdbID }}"><i class="bi bi-plus-lg"></i> Watchlist</button>
+                {% if not exists %}
+                    <button class="btn btn-success mb-3" name="imdbID" type="submit" value="{{ imdbID }}"><i class="bi bi-plus-lg"></i> Watchlist</button>
+                {% else %}
+                    <button class="btn btn-success mb-3" disabled name="imdbID" type="submit" value="{{ imdbID }}"><i class="bi bi-check-lg"></i> Watchlist</button>
+                {% endif %}
             {% else %}
-                <p><a href="/login">Log in</a> or <a href="/register">register</a> to add to your watchlist</p>
+                <p class="mb-3"><a href="/login">Log in</a> or <a href="/register">register</a> to add to your watchlist</p>
             {% endif %}
         </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>Source</th>
+                    <th>Type</th>
+                    <th>Format</th>
+                    <th>Price</th>
+                    <th>Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in details["sources"] %}
+                    <tr>
+                        <td>{{ item["source_id"] }}</td>
+                        <td>{{ item["type"] }}</td>
+                        {% if item["format"] %}
+                            <td>{{ item["format"] }}</td>
+                        {% else %}
+                            <td>--</td>
+                        {% endif %}
+                        {% if item["type"] == "free" %}
+                            <td>free</td>
+                        {% elif item["type"] == "sub" %}
+                            <td>--</td>
+                        {% else %}
+                            <td>${{ item["price"] }}</td>
+                        {% endif %}
+                        <td>
+                            <a class="btn btn-primary" href="{{ item['web_url'] }}" target="_blank" role="button">Watch</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}
