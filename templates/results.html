@@ -13,7 +13,7 @@
                     <tr>
                         <th>Title</th>
                         <th>Poster</th>
-                        <th>Description</th>
+                        <th>Year</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -22,18 +22,18 @@
                         <tr>
                             <form action="/details" method="post">
                                 <td>
-                                    <input class="hide-input" name="title" value="{{ result["title"] }}">
+                                    <input class="hide-input" name="title" value="{{ result['title'] }}">
                                     {{ result["title"] }}</td>
                                 <td>
-                                    <input class="hide-input" name="image" value="{{ result["image"] }}">
+                                    <input class="hide-input" name="image" value="{{ result['image'] }}">
                                     <img src="{{ result["image"] }}" alt="{{ result["title"] }} poster" width="65" height="100">
                                 </td>
                                 <td>
-                                    <input class="hide-input" name="description" value="{{ result["description"] }}">
-                                    {{ result["description"] }}
+                                    <input class="hide-input" name="description" value="{{ result['description'][:6] }}">
+                                    {{ result["description"][:6] }}
                                 </td>
                                 <td>
-                                    <button class="btn btn-primary" name="imdbID" type="submit" value="{{ result["id"] }}">Details</button>
+                                    <button class="btn btn-primary" name="imdbID" type="submit" value="{{ result['id'] }}">Details</button>
                                 </td>
                             </form>
                         </tr>

@@ -8,7 +8,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from helpers import apology, login_required, lookupTitle, getTitleId, getDetails
+from helpers import apology, login_required, lookupTitle, getTitleId, getDetails, getSourceDetails
 
 # Configure application
 app = Flask(__name__)
@@ -24,6 +24,7 @@ Session(app)
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///final_project.db")
 
+
 @app.after_request
 def after_request(response):
     """ Ensure responses aren't cached """
@@ -31,6 +32,14 @@ def after_request(response):
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
     return response
+
+
+# Before first user request, grab source data from Watchmode
+@app.before_first_request
+def getSources():
+    data = getSourceDetails()
+    print(len(data))
+    print(data)
 
 
 # Home/Search route
@@ -141,7 +150,6 @@ def details():
     titleID = titleID["title_results"][0]["id"]
     details = getDetails(titleID)
 
-
     # Checks if logged in and item exists in wathlist to dynamically render "+ Watchlist" button
     if "user_id" in session:
         user = session["user_id"]
@@ -170,7 +178,6 @@ def login():
 
         # Ensure username and password was submitted
         if not request.form.get("username") or not request.form.get("password"):
-            # SWAP FOR ALERT/FLASH
             flash("Username and/or password missing")
             return render_template("login.html")
 
@@ -214,7 +221,6 @@ def register():
     if request.method == "POST":
 
         # Ensure username, password, and confirmation was submitted and that passwords match
-        # SWAP APOLOGIES FOR ALERTS/FLASHES
         if not request.form.get("username") or not request.form.get("password") or not request.form.get("confirmation"):
             flash("Must fill out form completely")
             return render_template("register.html")

@@ -6,6 +6,7 @@ import json
 from flask import redirect, render_template, request, session
 from functools import wraps
 
+
 def apology(message, code=400):
     """ Render message as an apology to user """
     def escape(s):
@@ -93,6 +94,42 @@ def getDetails(titleId):
     # Parse response
     try:
         data = response.json()
+        return data
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+# Search Watchmode API for source details
+def getSourceDetails():
+    """ Search Watchmode for source details to store in list of dicts """
+
+    # Contact API
+    try:
+        watch_api_key = os.environ.get("WATCHMODE_API_KEY")
+        url = f"https://api.watchmode.com/v1/sources/?apiKey={watch_api_key}&regions=US"
+        response = requests.get(url)
+        response.raise_for_status()
+    except requests.RequestException:
+        return None
+
+    # Parse response
+    try:
+        data = response.json()
+    except (KeyError, TypeError, ValueError):
+        return None
+
+    # Remove unneccessary data and change key/value to be id/name
+    try:
+        for d in data:
+            d[d["id"]] = d.pop("name", None)
+            d.pop("id", None)
+            d.pop("type", None)
+            d.pop("logo_100px", None)
+            d.pop("ios_appstore_url", None)
+            d.pop("android_playstore_url", None)
+            d.pop("android_scheme", None)
+            d.pop("ios_scheme", None)
+            d.pop("regions", None)
         return data
     except (KeyError, TypeError, ValueError):
         return None
