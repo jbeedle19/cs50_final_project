@@ -21,7 +21,7 @@ SO THAT I can see which streaming services have it and start watching
 
 <!-- [Video Link](https://drive.google.com/file/d/1UJUaD_XzF-mi68LD6efGa-RT3N1JIy0q/view) -->
 ## Website
-heroku link here
+https://jb-nowstreaming.herokuapp.com/
 ## Built With
 * Python
 * Flask
