@@ -23,39 +23,46 @@
                 <p class="mb-3"><a href="/login">Log in</a> or <a href="/register">register</a> to add to your watchlist</p>
             {% endif %}
         </form>
-        <table>
-            <thead>
-                <tr>
-                    <th>Source</th>
-                    <th>Type</th>
-                    <th>Format</th>
-                    <th>Price</th>
-                    <th>Link</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in details["sources"] %}
+        {% if details["sources"] %}
+            <h3>Now Streaming:</h3>
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ sources[item["source_id"]] }}</td>
-                        <td>{{ item["type"] }}</td>
-                        {% if item["format"] %}
-                            <td>{{ item["format"] }}</td>
-                        {% else %}
-                            <td>--</td>
-                        {% endif %}
-                        {% if item["type"] == "free" %}
-                            <td>free</td>
-                        {% elif item["type"] == "sub" %}
-                            <td>--</td>
-                        {% else %}
-                            <td>${{ item["price"] }}</td>
-                        {% endif %}
-                        <td>
-                            <a class="btn btn-primary" href="{{ item['web_url'] }}" target="_blank" role="button">Watch</a>
-                        </td>
+                        <th>Source</th>
+                        <th>Type</th>
+                        <th>Format</th>
+                        <th>Price</th>
+                        <th>Link</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for item in details["sources"] %}
+                        <tr>
+                            <td>{{ item["source_id"] }}</td>
+                            <td>{{ item["type"] }}</td>
+                            {% if item["format"] %}
+                                <td>{{ item["format"] }}</td>
+                            {% else %}
+                                <td>--</td>
+                            {% endif %}
+                            {% if item["type"] == "free" %}
+                                <td>free</td>
+                            {% elif item["type"] == "sub" or item["type"] == "tve" %}
+                                <td>--</td>
+                            {% else %}
+                                <td>${{ item["price"] }}</td>
+                            {% endif %}
+                            <td>
+                                <a class="btn btn-primary" href="{{ item['web_url'] }}" target="_blank" role="button">Watch</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div>
+                <h3>Hmm, no streaming sources found 🤔</h3>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}

@@ -1,7 +1,5 @@
 import os
 import requests
-import urllib.request
-import json
 
 from flask import redirect, render_template, request, session
 from functools import wraps
@@ -131,5 +129,16 @@ def getSourceDetails():
             d.pop("ios_scheme", None)
             d.pop("regions", None)
         return data
+    except (KeyError, TypeError, ValueError):
+        return None
+
+# Get source names from source ids
+def getSourceNames(dbSources, details):
+    try:
+        for d in details["sources"]:
+            for s in dbSources:
+                for key, val in s.items():
+                        if str(d["source_id"]) == key:
+                            d["source_id"] = val
     except (KeyError, TypeError, ValueError):
         return None

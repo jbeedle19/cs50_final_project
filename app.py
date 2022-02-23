@@ -1,14 +1,12 @@
 import os
 import re
-import datetime
 
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
-from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from helpers import apology, login_required, lookupTitle, getTitleId, getDetails, getSourceDetails
+from helpers import apology, login_required, lookupTitle, getTitleId, getDetails, getSourceDetails, getSourceNames
 
 # Configure application
 app = Flask(__name__)
@@ -53,7 +51,7 @@ def index():
 
 
 # Action route for deleting or viewing watchlist items
-@app.route("/action", methods=["POST"])
+@app.route("/watchlist-details", methods=["POST"])
 @login_required
 def action():
     """ Show details or delete watchlist item"""
@@ -82,6 +80,7 @@ def action():
         for s in sources:
             s[s["id"]] = s.pop("name", None)
             s.pop("id", None)
+        getSourceNames(sources, details)
 
         # Check logged in and watchlist for existing item to dynamically render "+ Watchlist" button
         if "user_id" in session:
@@ -157,6 +156,13 @@ def details():
     titleID = titleID["title_results"][0]["id"]
     details = getDetails(titleID)
 
+    # Get source names
+    sources = db.execute("SELECT * FROM sources")
+    for s in sources:
+        s[s["id"]] = s.pop("name", None)
+        s.pop("id", None)
+    getSourceNames(sources, details)
+
     # Checks if logged in and item exists in wathlist to dynamically render "+ Watchlist" button
     if "user_id" in session:
         user = session["user_id"]
@@ -169,7 +175,7 @@ def details():
         user = None
         exists = False
 
-    return render_template("details.html", imdbID=imdbID, title=title, image=image, description=description, user=user, details=details, exists=exists)
+    return render_template("details.html", imdbID=imdbID, title=title, image=image, description=description, user=user, details=details, exists=exists, sources=sources)
 
 
 # Login Route
