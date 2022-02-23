@@ -35,11 +35,10 @@ def after_request(response):
 
 
 # Before first user request, grab source data from Watchmode
-@app.before_first_request
-def getSources():
-    data = getSourceDetails()
-    print(len(data))
-    print(data)
+# @app.before_first_request
+# def getSources():
+#     sources = db.execute("SELECT * FROM sources")
+#     print(sources)
 
 
 # Home/Search route
@@ -76,6 +75,12 @@ def action():
         titleID = titleID["title_results"][0]["id"]
         details = getDetails(titleID)
 
+        # Get source names
+        sources = db.execute("SELECT * FROM sources")
+        for s in sources:
+            s[s["id"]] = s.pop("name", None)
+            s.pop("id", None)
+
         # Check logged in and watchlist for existing item to dynamically render "+ Watchlist" button
         if "user_id" in session:
             user = session["user_id"]
@@ -88,7 +93,7 @@ def action():
             user = None
 
 
-        return render_template("details.html", imdbID=imdbID, title=title, image=image, description=description, user=user, details=details, exists=exists)
+        return render_template("details.html", imdbID=imdbID, title=title, image=image, description=description, user=user, details=details, exists=exists, sources=sources)
 
     # Handle delete action
     if "delete" in request.form:

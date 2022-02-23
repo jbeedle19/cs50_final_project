@@ -36,7 +36,7 @@
             <tbody>
                 {% for item in details["sources"] %}
                     <tr>
-                        <td>{{ item["source_id"] }}</td>
+                        <td>{{ sources[item["source_id"]] }}</td>
                         <td>{{ item["type"] }}</td>
                         {% if item["format"] %}
                             <td>{{ item["format"] }}</td>
