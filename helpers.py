@@ -101,7 +101,7 @@ def getDetails(titleId):
 
 # Search Watchmode API for source details
 def getSourceDetails():
-    """ Search Watchmode for source details to store in list of dicts """
+    """ Search Watchmode for source details to store in DB """
 
     # Contact API
     try:
@@ -121,7 +121,7 @@ def getSourceDetails():
     # Remove unneccessary data and change key/value to be id/name
     try:
         for d in data:
-            d[d["id"]] = d.pop("name", None)
+            d[str(d["id"])] = d.pop("name", None)
             d.pop("id", None)
             d.pop("type", None)
             d.pop("logo_100px", None)

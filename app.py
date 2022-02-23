@@ -34,11 +34,13 @@ def after_request(response):
     return response
 
 
-# Before first user request, grab source data from Watchmode
+# Before first user request, grab source data from Watchmode and enter in DB
 # @app.before_first_request
 # def getSources():
-#     sources = db.execute("SELECT * FROM sources")
-#     print(sources)
+#     sources = getSourceDetails()
+#     for s in sources:
+#         for key, val in s.items():
+#             db.execute("INSERT INTO sources (id, name) VALUES(?, ?)", key, val)
 
 
 # Home/Search route
