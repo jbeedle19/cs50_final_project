@@ -17,9 +17,9 @@ I WANT an app where I can search for a movie or tv show</br>
 SO THAT I can see which streaming services have it and start watching
 
 ## Usage
-<!-- ![Walkthrough](./public/images/fridge-friend-walkthrough.gif) -->
+![Walkthrough](./NowStreaming.gif)
 
-<!-- [Video Link](https://drive.google.com/file/d/1UJUaD_XzF-mi68LD6efGa-RT3N1JIy0q/view) -->
+[Video Link](https://drive.google.com/file/d/14vdqAYu3-qG_oVucJIP3qLdmUtSO29X3/view)
 ## Website
 https://jb-nowstreaming.herokuapp.com/
 ## Built With
