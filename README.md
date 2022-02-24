@@ -9,7 +9,7 @@
 * [Credits](#credits)
 * [Questions](#questions)
 ## Description
-A web application where users can search for a movie or tv show and find out which streaming services are offering it. Once a user searches for the title they will see a list of results to choose from. The list will also display a poster and the year for each title to help the user find the correct movie or tv show. On the details page, a user can follow one of the links to their preferred streaming service and start watching. If a user registers for an account then they can also add the show or movie to their own watchlist to watch at a later time. Logged in users are able to edit their watchlist by adding more items or deleting tv shows and/or movies they have already seen.
+This is the web application that I created as my final project for CS50x, Intro to Computer Science. Site users can search for a movie or tv show and find out which streaming services are offering it. Once a user searches for the title they will see a list of results to choose from. The list will also display a poster and the year for each title to help the user find the correct movie or tv show. On the details page, a user can follow one of the links to their preferred streaming service and start watching. If a user registers for an account then they can also add the show or movie to their own watchlist to watch at a later time. Logged in users are able to edit their watchlist by adding more items or deleting tv shows and/or movies they have already seen.
 ## User Story
 AS A USER </br>
 I love to stream movies and shows but there are so many streaming options</br>
