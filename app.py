@@ -268,8 +268,8 @@ def register():
         # Remember which user has registered/logged in
         session["user_id"] = id
 
-        # Take user to dashboard/watchlist
-        return redirect("/dashboard")
+        # Take user to watchlist
+        return redirect("/watchlist")
 
     # User reached route via GET
     else:
