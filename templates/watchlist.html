@@ -20,19 +20,19 @@
                 <tbody>
                     {% for item in watchlist %}
                         <tr>
-                            <form action="/action" method="post">
+                            <form action="/watchlist-details" method="post">
                                 <input class="hide-input" name="title" value="{{ item['title'] }}">
                                 <input class="hide-input" name="image" value="{{ item['image_link'] }}">
-                                <input class="hide-input" name="description" value="{{ item['description'][:6] }}">
+                                <input class="hide-input" name="description" value="{{ item['description'] }}">
                                 <td>{{ item["title"] }}</td>
                                 <td>
                                     <img src="{{ item["image_link"] }}" alt="{{ item["title"] }} poster" width="65" height="100">
                                 </td>
-                                <td>{{ item["description"][:6] }}</td>
+                                <td>{{ item["description"] }}</td>
                                 <td>
-                                    <button class="btn btn-primary" name="details" type="submit" value="{{ item['imdb_id'] }}">Details</button>
+                                    <button class="btn btn-primary list-btn" name="details" type="submit" value="{{ item['imdb_id'] }}">Details</button>
                                     <span class="action-space"></span>
-                                    <button class="btn btn-danger" name="delete" type="submit" value="{{ item['imdb_id'] }}"><i class="bi bi-trash-fill"></i> Delete</button>
+                                    <button class="btn btn-danger list-btn" name="delete" type="submit" value="{{ item['imdb_id'] }}"><i class="bi bi-trash-fill"></i> Delete</button>
                                 </td>
                             </form>
                         </tr>

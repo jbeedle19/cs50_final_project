@@ -1,7 +1,5 @@
 import os
 import requests
-import urllib.request
-import json
 
 from flask import redirect, render_template, request, session
 from functools import wraps
@@ -101,7 +99,7 @@ def getDetails(titleId):
 
 # Search Watchmode API for source details
 def getSourceDetails():
-    """ Search Watchmode for source details to store in list of dicts """
+    """ Search Watchmode for source details to store in DB """
 
     # Contact API
     try:
@@ -121,7 +119,7 @@ def getSourceDetails():
     # Remove unneccessary data and change key/value to be id/name
     try:
         for d in data:
-            d[d["id"]] = d.pop("name", None)
+            d[str(d["id"])] = d.pop("name", None)
             d.pop("id", None)
             d.pop("type", None)
             d.pop("logo_100px", None)
@@ -131,5 +129,16 @@ def getSourceDetails():
             d.pop("ios_scheme", None)
             d.pop("regions", None)
         return data
+    except (KeyError, TypeError, ValueError):
+        return None
+
+# Get source names from source ids
+def getSourceNames(dbSources, details):
+    try:
+        for d in details["sources"]:
+            for s in dbSources:
+                for key, val in s.items():
+                        if str(d["source_id"]) == key:
+                            d["source_id"] = val
     except (KeyError, TypeError, ValueError):
         return None

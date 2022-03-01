@@ -22,6 +22,12 @@ nav .navbar-brand .green, .green
     color: #2e944b;
 }
 
+/* Site Description */
+.site-desc {
+    margin: auto;
+    width: 600px;
+}
+
 /* Push Footer to Bottom */
 body {
     display: flex;
@@ -64,4 +70,19 @@ tbody tr:nth-of-type(odd) {
 
 .hide-input {
     display: none;
+}
+
+/* Breakpoints */
+
+/* Mobile */
+@media screen and (max-width: 426px) {
+    .site-desc {
+        width: auto;
+    }
+}
+
+@media screen and (max-width: 599px) {
+    .list-btn {
+        display: flex;
+    }
 }
